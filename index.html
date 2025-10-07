@@ -136,12 +136,25 @@
             }
             
             noResults.style.display = 'none';
-            tableBody.innerHTML = data.map(person => `
-                <tr>
-                    <td>${person.name}</td>
-                    <td>${person.tableNo}</td>
-                </tr>
-            `).join('');
+            tableBody.innerHTML = data.map(person => {
+                // Bold the last name (everything after the last space)
+                const lastSpaceIndex = person.name.lastIndexOf(' ');
+                let formattedName;
+                if (lastSpaceIndex > 0) {
+                    const firstName = person.name.substring(0, lastSpaceIndex);
+                    const lastName = person.name.substring(lastSpaceIndex + 1);
+                    formattedName = `${firstName} <strong>${lastName}</strong>`;
+                } else {
+                    formattedName = person.name;
+                }
+                
+                return `
+                    <tr>
+                        <td>${formattedName}</td>
+                        <td>${person.tableNo}</td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // Search functionality
