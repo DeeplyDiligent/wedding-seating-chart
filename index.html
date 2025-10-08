@@ -171,10 +171,21 @@
                 return;
             }
             
-            const filtered = seatingData.filter(person => 
-                person.name.toLowerCase().includes(searchTerm) ||
-                person.tableNo.toLowerCase().includes(searchTerm)
-            );
+            // Check if search term is purely numeric
+            const isNumeric = /^\d+$/.test(e.target.value);
+            
+            const filtered = seatingData.filter(person => {
+                // Always search names with substring match
+                const nameMatch = person.name.toLowerCase().includes(searchTerm);
+                
+                // For numeric searches, use exact match on table number
+                // For text searches, use substring match on table number
+                const tableMatch = isNumeric 
+                    ? person.tableNo === e.target.value
+                    : person.tableNo.toLowerCase().includes(searchTerm);
+                
+                return nameMatch || tableMatch;
+            });
             
             displayData(filtered);
         });
