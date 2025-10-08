@@ -164,18 +164,25 @@
 
         // Search functionality
         document.getElementById('searchBox').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            
+            const searchTerm = e.target.value.trim().toLowerCase();
+
             if (searchTerm === '') {
                 displayData(seatingData);
                 return;
             }
-            
-            const filtered = seatingData.filter(person => 
-                person.name.toLowerCase().includes(searchTerm) ||
-                person.tableNo.toLowerCase().includes(searchTerm)
-            );
-            
+
+            let filtered;
+            if (/^[0-9]+$/.test(searchTerm)) {
+                // Input is all digits: match table number exactly
+                filtered = seatingData.filter(person => person.tableNo.toLowerCase() === searchTerm);
+            } else {
+                // Input contains letters: substring search for names and table numbers
+                filtered = seatingData.filter(person =>
+                    person.name.toLowerCase().includes(searchTerm) ||
+                    person.tableNo.toLowerCase().includes(searchTerm)
+                );
+            }
+
             displayData(filtered);
         });
 
