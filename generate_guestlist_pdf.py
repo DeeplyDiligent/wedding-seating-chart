@@ -42,7 +42,7 @@ def group_by_alphabet(guests):
         groups[letter].append(guest)
     return dict(sorted(groups.items()))
 
-def generate_guestlist_pdf(guests, filename, columns=4):
+def generate_guestlist_pdf(guests, filename, columns=6):
     pagesize = landscape(A1)
     left_margin = right_margin = top_margin = bottom_margin = 0.5 * inch
     usable_width = pagesize[0] - left_margin - right_margin
@@ -70,10 +70,13 @@ def generate_guestlist_pdf(guests, filename, columns=4):
     doc.addPageTemplates([PageTemplate(id='multi', frames=frames)])
 
     styles = getSampleStyleSheet()
+    # Starting font size and leading for guest names
+    base_font_size = 27.0
+    base_leading = 35.0
     styles.add(ParagraphStyle(
         name='GuestName',
-        fontSize=27,
-        leading=35,
+        fontSize=base_font_size,
+        leading=base_leading,
         spaceAfter=2,
         alignment=0,
         fontName='Helvetica',
@@ -87,34 +90,93 @@ def generate_guestlist_pdf(guests, filename, columns=4):
         fontName='Helvetica-Bold',
     ))
 
-    content = []
     groups = group_by_alphabet(guests)
-    for letter, group in groups.items():
-        content.append(Paragraph(letter, styles['Letter']))
-        for guest in sorted(group, key=lambda x: (x['last_name'], x['first_name'])):
-            # Bold only the last name (the token after the last space in the original full name)
-            first = guest['first_name']
-            last = guest['last_name']
-            table = guest['table']
 
-            if first:
-                # Use ReportLab's simple XML-like tags: <b> for bold and <font> for color
-                display_name = f"{first} <b>{last}</b>"
-            else:
-                display_name = f"<b>{last}</b>"
+    def make_content():
+        """Create and return a fresh list of flowables for building.
 
-            content.append(Paragraph(f"{display_name} <font color='#888888'>{table}</font>", styles['GuestName']))
-        content.append(Spacer(1, 32))
+        Platypus flowables are stateful and consumed during doc.build, so we must
+        regenerate them each time before building.
+        """
+        _content = []
+        for letter, group in groups.items():
+            _content.append(Paragraph(letter, styles['Letter']))
+            for guest in sorted(group, key=lambda x: (x['last_name'], x['first_name'])):
+                first = guest['first_name']
+                last = guest['last_name']
+                table = guest['table']
 
-    doc.build(content)
-    print(f"Generated {filename}")
+                if first:
+                    display_name = f"{first} <b>{last}</b>"
+                else:
+                    display_name = f"<b>{last}</b>"
+
+                _content.append(Paragraph(f"{display_name} <font color='#888888'>{table}</font>", styles['GuestName']))
+            _content.append(Spacer(1, 32))
+        return _content
+
+    # Build once at base font size to see how many pages are produced.
+    doc.build(make_content())
+    page_count = doc.page if hasattr(doc, 'page') else None
+
+    # If more than 1 page, iteratively reduce font size by 0.001 until it fits on one page
+    if page_count is None:
+        print(f"Generated {filename} (page count: unknown)")
+        return
+
+    # Avoid infinite loop: set a minimum font size we allow
+    min_font_size = 6.0
+    font_size = base_font_size
+    leading = base_leading
+
+    if page_count > 1:
+        # We'll rebuild repeatedly; preserve original doc template, but recreate doc each time
+        iteration = 0
+        prev_page_count = page_count
+        while page_count > 1 and font_size > min_font_size:
+            iteration += 1
+            font_size = round(font_size - 0.01, 3)
+            # Scale leading proportionally to the original ratio
+            leading = round(base_leading * (font_size / base_font_size), 3)
+
+            # Update style
+            styles['GuestName'].fontSize = font_size
+            styles['GuestName'].leading = leading
+
+            # Recreate document and frames to ensure layout uses updated styles
+            doc = BaseDocTemplate(
+                filename,
+                pagesize=pagesize,
+                title="Wedding Guest List",
+                leftMargin=left_margin,
+                rightMargin=right_margin,
+                topMargin=top_margin,
+                bottomMargin=bottom_margin,
+            )
+            doc.addPageTemplates([PageTemplate(id='multi', frames=frames)])
+
+            # Rebuild with fresh flowables to get updated page count
+            doc.build(make_content())
+            page_count = doc.page if hasattr(doc, 'page') else None
+
+            # Print periodic progress (every 50 iterations) and when page_count changes
+            if iteration % 50 == 0 or page_count != prev_page_count:
+                print(f"Iteration {iteration}: page_count={page_count}, fontSize={font_size}, leading={leading}")
+                prev_page_count = page_count
+
+        if page_count is None:
+            print(f"Generated {filename} (page count: unknown)")
+        else:
+            print(f"Generated {filename} ({page_count} pages) with fontSize={font_size}")
+    else:
+        print(f"Generated {filename} ({page_count} pages)")
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Generate a beautiful A1 PDF guestlist from seating.csv")
     parser.add_argument('--input', default='seating.csv', help='Input CSV file')
     parser.add_argument('--output', default='guestlist.pdf', help='Output PDF file')
-    parser.add_argument('--columns', default=4, type=int, help='Number of columns per page')
+    parser.add_argument('--columns', default=7, type=int, help='Number of columns per page')
     args = parser.parse_args()
 
     guests = read_guests(args.input)
