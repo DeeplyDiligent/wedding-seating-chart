@@ -83,9 +83,9 @@ def generate_guestlist_pdf(guests, filename, columns=6):
     ))
     styles.add(ParagraphStyle(
         name='Letter',
-        fontSize=48,
+        fontSize=38,
         leading=56,
-        spaceAfter=18,
+        spaceAfter=0,
         textColor=colors.HexColor('#3E3E3E'),
         fontName='Helvetica-Bold',
     ))
@@ -99,7 +99,7 @@ def generate_guestlist_pdf(guests, filename, columns=6):
         regenerate them each time before building.
         """
         _content = []
-        for letter, group in groups.items():
+        for i, (letter, group) in enumerate(groups.items()):
             _content.append(Paragraph(letter, styles['Letter']))
             for guest in sorted(group, key=lambda x: (x['last_name'], x['first_name'])):
                 first = guest['first_name']
@@ -112,7 +112,9 @@ def generate_guestlist_pdf(guests, filename, columns=6):
                     display_name = f"<b>{last}</b>"
 
                 _content.append(Paragraph(f"{display_name} <font color='#888888'>{table}</font>", styles['GuestName']))
-            _content.append(Spacer(1, 32))
+            # Append a spacer between groups, but not after the last one
+            if i != len(groups) - 1:
+                _content.append(Spacer(1, 32))
         return _content
 
     # Build once at base font size to see how many pages are produced.
