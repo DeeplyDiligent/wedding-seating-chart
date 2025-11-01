@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reception Seating Chart</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Bellota+Text:wght@400;700&display=swap');
-</style>
+    <!-- Fonts for minimal elegance -->
+    <link href="https://fonts.googleapis.com/css2?family=Bellota+Text:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --accent-blue: #7FC8F8;
+            --header-bg: #EAF6FB;
+            --text-dark: #22334d;
+            --border-radius: 14px;
+            --table-bg: #fafcff;
+            --input-bg: #f3faff;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -16,68 +24,108 @@
 
         body {
             font-family: "Bellota Text", sans-serif;
-            font-weight: 400;
-            font-style: normal;
-            padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--header-bg);
+            padding: 24px;
+            color: var(--text-dark);
         }
 
         .container {
-            max-width: 800px;
+            max-width: 700px;
             margin: 0 auto;
             background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px 32px 32px 32px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 36px rgba(127,200,248,0.07), 0 1.5px 8px rgba(34,51,77,0.05);
         }
 
         h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.6rem;
+            color: var(--accent-blue);
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
+            font-weight: 700;
         }
 
         .search-box {
             width: 100%;
-            padding: 12px 15px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            transition: border-color 0.3s;
+            padding: 13px 16px;
+            font-size: 1rem;
+            border: 1.5px solid var(--accent-blue);
+            border-radius: 8px;
+            margin-bottom: 28px;
+            background: var(--input-bg);
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .search-box:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #59A7D8;
+            box-shadow: 0 0 0 2px #bfdcf7;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: var(--table-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(127,200,248,0.06);
         }
 
         th, td {
-            padding: 12px;
+            padding: 15px 14px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #4CAF50;
+            background-color: var(--accent-blue);
             color: white;
-            font-weight: bold;
+            font-weight: 700;
+            border: none;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        td {
+            border-bottom: 1px solid #e5f0fa;
+            font-size: 1.05rem;
+        }
+
+        tr {
+            background: transparent;
+            transition: background 0.2s;
         }
 
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: #f0f8fd;
         }
 
         .no-results {
             text-align: center;
-            padding: 20px;
-            color: #999;
+            padding: 24px 0 12px 0;
+            color: #8aa4bd;
+            font-size: 1.1rem;
+            letter-spacing: 0.1px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px 4px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            th, td {
+                padding: 10px 5px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
