@@ -15,22 +15,22 @@ jobs:
         run: |
           curl -L "https://docs.google.com/spreadsheets/d/1AOW3WpvSTwErDGac_sTB82c6sV9qVOndWehuoRRKPoc/export?format=csv&gid=1787526586" -o seating.csv
 
-      - name: Generate guestlist PDF
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+      # - name: Generate guestlist PDF
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.x'
 
-      - name: Install dependencies
-        run: |
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          else
-            pip install reportlab
-          fi
+      # - name: Install dependencies
+      #   run: |
+      #     if [ -f requirements.txt ]; then
+      #       pip install -r requirements.txt
+      #     else
+      #       pip install reportlab
+      #     fi
 
-      - name: Generate guestlist PDF
-        run: |
-          python3 generate_guestlist_pdf.py --input seating.csv --output guestlist.pdf
+      # - name: Generate guestlist PDF
+      #   run: |
+      #     python3 generate_guestlist_pdf.py --input seating.csv --output guestlist.pdf
 
       - name: Commit and push changes
         run: |
