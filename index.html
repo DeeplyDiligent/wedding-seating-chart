@@ -17,7 +17,7 @@
             --border-radius: 14px;
             --table-bg: #fffbe9;
             --input-bg: #f8ede2;
-            --table-row-lightpeach: #f8ede2;
+            --table-row-lightgold: #fdf8ec; /* very light gold for alt rows */
             --table-row-hover: #fae2cb;
         }
 
@@ -51,7 +51,7 @@
         h1 {
             font-family: 'Dancing Script', cursive;
             font-size: 2.6rem;
-            color: var(--text-dark); /* Changed to dark brown */
+            color: var(--text-dark); /* dark brown */
             text-align: center;
             margin-bottom: 40px;
             letter-spacing: 1px;
@@ -95,6 +95,7 @@
             padding: 18px 18px;
             text-align: left;
             color: var(--text-dark);
+            border: none; /* Remove all cell borders */
         }
 
         th {
@@ -115,21 +116,21 @@
             border-bottom: none;
         }
 
-        /* Alternate row coloring with very light peach */
+        /* Alternate row coloring with very light gold */
         tbody tr {
             background: var(--table-bg);
             transition: background 0.2s;
         }
         tbody tr:nth-child(even) {
-            background: var(--table-row-lightpeach);
+            background: var(--table-row-lightgold);
         }
 
         tr:hover {
             background-color: var(--table-row-hover) !important;
         }
 
+        /* Remove the old border for td (no gold line between rows) */
         td {
-            border-bottom: 1px solid #f4dab7;
             font-size: 1.05rem;
         }
 
