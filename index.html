@@ -43,7 +43,7 @@
             font-size: 2.6rem;
             color: var(--accent-blue);
             text-align: center;
-            margin-bottom: 32px;
+            margin-bottom: 40px; /* more space below title */
             letter-spacing: 1px;
             font-weight: 700;
         }
@@ -54,7 +54,7 @@
             font-size: 1rem;
             border: 1.5px solid var(--accent-blue);
             border-radius: 8px;
-            margin-bottom: 28px;
+            margin-bottom: 40px; /* more space below search box */
             background: var(--input-bg);
             transition: border-color 0.3s, box-shadow 0.3s;
         }
@@ -63,6 +63,10 @@
             outline: none;
             border-color: #59A7D8;
             box-shadow: 0 0 0 2px #bfdcf7;
+        }
+
+        .table-wrapper {
+            margin-bottom: 38px; /* margin at the bottom of the table */
         }
 
         table {
@@ -132,22 +136,26 @@
             }
             h1 {
                 font-size: 2rem;
-                margin-bottom: 20px;
+                margin-bottom: 28px; /* more vertical space */
             }
             .search-box {
                 font-size: 0.92rem;
                 padding: 14px 20px; /* more vertical & horizontal padding on mobile */
-                margin-bottom: 18px;
+                margin-bottom: 28px;  /* more vertical space below search */
                 margin-left: 8vw;
                 margin-right: 8vw;
                 width: 84vw;
             }
-            table {
-                border-radius: 16px !important; /* more pronounced on mobile */
-                box-shadow: 0 2px 8px rgba(127,200,248,0.09);
+            .table-wrapper {
                 margin-left: 8vw;
                 margin-right: 8vw;
                 width: 84vw;
+                margin-bottom: 40px; /* more margin below table on mobile */
+            }
+            table {
+                border-radius: 16px !important;
+                box-shadow: 0 2px 8px rgba(127,200,248,0.09);
+                width: 100%;
             }
             th, td {
                 padding: 20px 18px; /* more vertical and horizontal padding */
@@ -160,18 +168,19 @@
     <div class="container">
         <h1>Reception Seating Chart</h1>
         <input type="text" id="searchBox" class="search-box" placeholder="Search by name or table number...">
-        
-        <table id="seatingTable">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Table</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody">
-                <!-- Data will be loaded here -->
-            </tbody>
-        </table>
+        <div class="table-wrapper">
+            <table id="seatingTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Table</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be loaded here -->
+                </tbody>
+            </table>
+        </div>
         <div id="noResults" class="no-results" style="display: none;">No results found</div>
     </div>
 
